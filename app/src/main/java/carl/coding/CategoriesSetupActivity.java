@@ -80,7 +80,6 @@ public class CategoriesSetupActivity extends AppCompatActivity {
 
         Button removeButton = new Button(this);
         removeButton.setText("Remove");
-        removeButton.setTextAllCaps(false);
         removeButton.setTextColor(ContextCompat.getColor(this, R.color.button_text));
         removeButton.setBackgroundResource(R.drawable.button_selector);
         LinearLayout.LayoutParams removeParams = new LinearLayout.LayoutParams(
