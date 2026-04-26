@@ -32,19 +32,14 @@ public class CoinActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PreferencesHelper.applyNightMode(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_coin);
 
-        // Initiate randomizer
         randomizer = new Random();
-
-        // Initiate vibrator
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        // Initiate handler
         handler = new Handler();
 
-        // Get widget by ID
         coinImageView = findViewById(R.id.coinImageView);
         coinFlipResult = findViewById(R.id.coinFlipResult);
         flipButton = findViewById(R.id.flipButton);
@@ -52,9 +47,8 @@ public class CoinActivity extends AppCompatActivity {
         headsDrawable = ContextCompat.getDrawable(this, R.drawable.coin_heads);
         tailsDrawable = ContextCompat.getDrawable(this, R.drawable.coin_tails);
         coinImageView.setImageDrawable(headsDrawable);
-        animator1 = ObjectAnimator.ofFloat(coinImageView, "rotationY", 0f, 360*4+90f);
+        animator1 = ObjectAnimator.ofFloat(coinImageView, "rotationY", 0f, 360 * 4 + 90f);
         animator2 = ObjectAnimator.ofFloat(coinImageView, "rotationY", -90f, 0f);
-
     }
 
     @Override
@@ -64,38 +58,26 @@ public class CoinActivity extends AppCompatActivity {
     }
 
     public void flip(View view) {
-        // Disable button during animation
         flipButton.setEnabled(false);
-
-        // Reset results TextView widget
         coinFlipResult.setText(" ");
 
-        // Vibrate to provide feedback to the user
-        vib.vibrate(300);
+        if (vib != null) {
+            vib.vibrate(300);
+        }
 
-        // Flip 1 or 2
         int flipResult = randomizer.nextInt(2);
 
-        // Schedule coin flip animation
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                animator1.setDuration(animationDuration);
-                animator1.start();
-            }
+        handler.postDelayed(() -> {
+            animator1.setDuration(animationDuration);
+            animator1.start();
         }, 10);
 
-        // Schedule displaying result
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                animator2.setDuration(200);
-                animator2.start();
-                String flipResultString = resultToTextAndImage(flipResult);
-                coinFlipResult.setText(flipResultString);
-                // Reactivate Button
-                flipButton.setEnabled(true);
-            }
+        handler.postDelayed(() -> {
+            animator2.setDuration(200);
+            animator2.start();
+            String flipResultString = resultToTextAndImage(flipResult);
+            coinFlipResult.setText(flipResultString);
+            flipButton.setEnabled(true);
         }, animationDuration);
     }
 

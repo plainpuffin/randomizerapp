@@ -1,97 +1,152 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<ScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#FFFFFF"
+    android:background="@color/screen_background"
+    android:fillViewport="true"
     tools:context=".StartMenu">
 
-    <ImageView
-        android:id="@+id/imageView"
-        android:layout_width="70dp"
-        android:layout_height="70dp"
-        android:scaleType="fitCenter"
-        android:scaleX="1"
-        android:scaleY="1"
-        app:layout_constraintBottom_toTopOf="@+id/textView"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:srcCompat="@drawable/dice256" />
-
-    <TextView
-        android:id="@+id/textView"
-        android:layout_width="wrap_content"
+    <LinearLayout
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_marginBottom="60dp"
-        android:text="RANDOMIZER"
-        android:textColor="#000000"
-        android:textSize="37sp"
-        app:layout_constraintBottom_toTopOf="@+id/coinButton"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent" />
+        android:orientation="vertical"
+        android:padding="24dp">
 
-    <Button
-        android:id="@+id/coinButton"
-        android:layout_width="200dp"
-        android:layout_height="55dp"
-        android:background="@drawable/button_selector"
-        android:onClick="goCoin"
-        android:text="Coin"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center_vertical"
+            android:orientation="horizontal">
 
-    <Button
-        android:id="@+id/diceButton"
-        android:layout_width="200dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/button_selector"
-        android:onClick="goDice"
-        android:text="Dice"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/coinButton" />
+            <ImageView
+                android:id="@+id/imageView"
+                android:layout_width="60dp"
+                android:layout_height="60dp"
+                android:src="@drawable/dice256" />
 
-    <Button
-        android:id="@+id/categoriesButton"
-        android:layout_width="200dp"
-        android:layout_height="55dp"
-        android:layout_marginTop="30dp"
-        android:background="@drawable/button_selector"
-        android:onClick="goCategories"
-        android:text="Categories"
-        android:textAllCaps="false"
-        android:textColor="#FFFFFF"
-        android:textSize="22sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/diceButton" />
+            <LinearLayout
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_weight="1"
+                android:orientation="vertical">
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="Randomizer"
+                    android:textColor="@color/text_primary"
+                    android:textSize="32sp"
+                    android:textStyle="bold" />
 
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="4dp"
+                    android:text="Classic picks, teams, numbers, and more"
+                    android:textColor="@color/text_secondary"
+                    android:textSize="16sp" />
+            </LinearLayout>
+        </LinearLayout>
 
-<!--    <Button-->
-<!--        android:id="@+id/yatzyButton"-->
-<!--        android:layout_width="200dp"-->
-<!--        android:layout_height="55dp"-->
-<!--        android:layout_marginTop="30dp"-->
-<!--        android:background="@drawable/button_selector"-->
-<!--        android:onClick="goYatzy"-->
-<!--        android:text="Yatzy"-->
-<!--        android:textAllCaps="false"-->
-<!--        android:textColor="#FFFFFF"-->
-<!--        android:textSize="22sp"-->
-<!--        app:layout_constraintEnd_toEndOf="parent"-->
-<!--        app:layout_constraintStart_toStartOf="parent"-->
-<!--        app:layout_constraintTop_toBottomOf="@+id/categoriesButton" />-->
+        <androidx.appcompat.widget.SwitchCompat
+            android:id="@+id/darkModeSwitch"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="Dark mode"
+            android:textColor="@color/text_primary"
+            android:textSize="16sp" />
 
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:background="@drawable/panel_background"
+            android:orientation="vertical"
+            android:padding="20dp">
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Randomizers"
+                android:textColor="@color/text_primary"
+                android:textSize="22sp"
+                android:textStyle="bold" />
+
+            <Button
+                android:id="@+id/coinButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="16dp"
+                android:background="@drawable/button_selector"
+                android:onClick="goCoin"
+                android:text="Coin"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/diceButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_selector"
+                android:onClick="goDice"
+                android:text="Dice"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/categoriesButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_selector"
+                android:onClick="goCategories"
+                android:text="Categories"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/teamButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_selector"
+                android:onClick="goTeams"
+                android:text="Team randomizer"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/numberButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_selector"
+                android:onClick="goNumbers"
+                android:text="Number generator"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text"
+                android:textSize="18sp" />
+
+            <Button
+                android:id="@+id/yesNoButton"
+                android:layout_width="match_parent"
+                android:layout_height="56dp"
+                android:layout_marginTop="12dp"
+                android:background="@drawable/button_selector"
+                android:onClick="goYesNo"
+                android:text="Yes or no"
+                android:textAllCaps="false"
+                android:textColor="@color/button_text"
+                android:textSize="18sp" />
+        </LinearLayout>
+    </LinearLayout>
+</ScrollView>

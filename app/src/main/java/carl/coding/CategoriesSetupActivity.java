@@ -1,59 +1,46 @@
 package carl.coding;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
 import android.view.inputmethod.EditorInfo;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
+
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
-
 
 public class CategoriesSetupActivity extends AppCompatActivity {
 
-    private List<String> elementList;
+    private final ArrayList<String> elementList = new ArrayList<>();
     private LinearLayout elementListLayout;
-    private TextView headerText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PreferencesHelper.applyNightMode(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories_setup);
 
-        elementList = new ArrayList<>();
         elementListLayout = findViewById(R.id.element_list_layout);
-        headerText = findViewById(R.id.textView2);
-
         Button addButton = findViewById(R.id.add_button);
-        addButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                addElement();
-            }
-        });
-
         Button startButton = findViewById(R.id.start_button);
-        startButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startCategoriesActivity();
-            }
-        });
-    }
 
-    @Override
-    protected void onResume() {
-        super.onResume();
-        addElement();
+        addButton.setOnClickListener(v -> addElement(null));
+        startButton.setOnClickListener(v -> startCategoriesActivity());
+
+        if (elementListLayout.getChildCount() == 0) {
+            addElement(null);
+            addElement(null);
+            addElement(null);
+        }
     }
 
     @Override
@@ -62,66 +49,62 @@ public class CategoriesSetupActivity extends AppCompatActivity {
         overridePendingTransition(R.anim.slide_in_left, R.anim.slide_out_right);
     }
 
-    private void addElement() {
-
+    private void addElement(String prefill) {
         EditText editText = new EditText(this);
-        editText.setHint("New category");
-        editText.requestFocus(); // Set focus to the text field of the newly added element
-        editText.setSingleLine(true); // Set the text field to be a single line
+        editText.setHint("Category name");
+        editText.setSingleLine(true);
+        editText.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_FLAG_CAP_SENTENCES);
+        editText.setText(prefill == null ? "" : prefill);
+        editText.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
+        editText.setHintTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+        editText.setBackgroundResource(R.drawable.input_background);
+        editText.setPadding(dp(16), dp(14), dp(16), dp(14));
+        editText.setImeOptions(EditorInfo.IME_ACTION_DONE);
         editText.setOnEditorActionListener(new TextView.OnEditorActionListener() {
             @Override
             public boolean onEditorAction(TextView v, int actionId, KeyEvent event) {
                 if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    addElement(); // Trigger adding element when Enter key is pressed
+                    addElement(null);
                     return true;
                 }
                 return false;
             }
         });
 
-        LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(
-                LinearLayout.LayoutParams.MATCH_PARENT,
-                LinearLayout.LayoutParams.WRAP_CONTENT
+        LinearLayout.LayoutParams editParams = new LinearLayout.LayoutParams(
+                0,
+                LinearLayout.LayoutParams.WRAP_CONTENT,
+                1f
         );
-        editText.setLayoutParams(params);
-        editText.setBackgroundResource(android.R.drawable.edit_text);
-        editText.setPadding(16, 16, 16, 16);
+        editText.setLayoutParams(editParams);
 
         Button removeButton = new Button(this);
-        removeButton.setBackgroundResource(android.R.drawable.ic_menu_close_clear_cancel);
-
+        removeButton.setText("Remove");
+        removeButton.setTextAllCaps(false);
+        removeButton.setTextColor(ContextCompat.getColor(this, R.color.button_text));
+        removeButton.setBackgroundResource(R.drawable.button_selector);
         LinearLayout.LayoutParams removeParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.WRAP_CONTENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        removeParams.setMarginStart(16);
+        removeParams.setMarginStart(dp(12));
         removeButton.setLayoutParams(removeParams);
-        removeButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                removeElement(editText);
-            }
-        });
+        removeButton.setPadding(dp(18), dp(10), dp(18), dp(10));
+        removeButton.setOnClickListener(v -> removeElement(v));
 
         LinearLayout elementLayout = new LinearLayout(this);
         LinearLayout.LayoutParams elementParams = new LinearLayout.LayoutParams(
                 LinearLayout.LayoutParams.MATCH_PARENT,
                 LinearLayout.LayoutParams.WRAP_CONTENT
         );
-        elementParams.setMargins(0, 16, 0, 16);
+        elementParams.setMargins(0, 0, 0, dp(12));
         elementLayout.setLayoutParams(elementParams);
         elementLayout.setOrientation(LinearLayout.HORIZONTAL);
         elementLayout.addView(editText);
         elementLayout.addView(removeButton);
 
         elementListLayout.addView(elementLayout);
-
-//        LinearLayout layout = new LinearLayout(this);
-//        layout.setOrientation(LinearLayout.HORIZONTAL);
-//        layout.addView(editText);
-//        layout.addView(removeButton);
-//
-//        elementListLayout.addView(layout);
+        editText.requestFocus();
     }
 
     private void removeElement(View view) {
@@ -132,42 +115,44 @@ public class CategoriesSetupActivity extends AppCompatActivity {
     private void startCategoriesActivity() {
         removeEmptyElements();
 
-        if (elementList.size() == 0){
-            addElement();
+        if (elementList.size() == 0) {
+            addElement(null);
             return;
         }
 
+        boolean withdrawMode = ((android.widget.Switch) findViewById(R.id.withdraw_switch)).isChecked();
         Intent intent = new Intent(this, CategoriesActivity.class);
-        intent.putStringArrayListExtra("elements", (ArrayList<String>) elementList);
+        intent.putStringArrayListExtra("elements", elementList);
+        intent.putExtra("withdrawMode", withdrawMode);
         startActivity(intent);
         overridePendingTransition(R.anim.slide_in_right, R.anim.slide_out_left);
     }
 
     private void removeEmptyElements() {
         elementList.clear();
-        ArrayList<Integer> intList = new ArrayList<>();
+        ArrayList<Integer> emptyIndexes = new ArrayList<>();
 
-        // Generate list of elements to bring into next activity
         for (int i = 0; i < elementListLayout.getChildCount(); i++) {
             LinearLayout layout = (LinearLayout) elementListLayout.getChildAt(i);
             EditText editText = (EditText) layout.getChildAt(0);
-            if (!TextUtils.isEmpty(editText.getText().toString())) {
-                elementList.add(editText.getText().toString().trim());
-            }
-            else {
-                // Remember index of empty element EditTexts
-                intList.add(i);
+            String value = editText.getText().toString().trim();
+            if (!TextUtils.isEmpty(value)) {
+                elementList.add(value);
+            } else {
+                emptyIndexes.add(i);
             }
         }
 
-        // Remove elements with empty EditText
-        if (!intList.isEmpty()){
-            intList.sort(Collections.reverseOrder());
-            int listSize = intList.size();
-            for(int i = 0; i < listSize; i++){
-                View childToRemove = elementListLayout.getChildAt(intList.get(i));
+        if (!emptyIndexes.isEmpty()) {
+            emptyIndexes.sort(Collections.reverseOrder());
+            for (Integer index : emptyIndexes) {
+                View childToRemove = elementListLayout.getChildAt(index);
                 elementListLayout.removeView(childToRemove);
             }
         }
+    }
+
+    private int dp(int value) {
+        return Math.round(value * getResources().getDisplayMetrics().density);
     }
 }

@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
-    tools:context=".DiceActivity">
+    tools:context=".NumberActivity">
 
     <LinearLayout
         android:layout_width="0dp"
@@ -16,41 +16,64 @@
         android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/rollButton"
+        app:layout_constraintBottom_toTopOf="@+id/generate_number_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="0.6">
 
         <TextView
-            android:id="@+id/rollResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="1"
-            android:textAlignment="center"
+            android:text="Number generator"
+            android:textColor="@color/text_primary"
+            android:textSize="26sp"
+            android:textStyle="bold" />
+
+        <EditText
+            android:id="@+id/min_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:background="@drawable/input_background"
+            android:hint="Minimum"
+            android:inputType="numberSigned"
+            android:padding="16dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <EditText
+            android:id="@+id/max_input"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:background="@drawable/input_background"
+            android:hint="Maximum"
+            android:inputType="numberSigned"
+            android:padding="16dp"
+            android:textColor="@color/text_primary"
+            android:textColorHint="@color/text_secondary" />
+
+        <TextView
+            android:id="@+id/number_result_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="20dp"
+            android:text="0"
             android:textColor="@color/text_primary"
             android:textSize="42sp"
             android:textStyle="bold" />
-
-        <ImageView
-            android:id="@+id/ImageView1"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
-            android:layout_marginTop="16dp"
-            android:src="@drawable/dice_1_512" />
     </LinearLayout>
 
     <Button
-        android:id="@+id/rollButton"
+        android:id="@+id/generate_number_button"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/button_selector"
-        android:onClick="roll"
-        android:text="@string/rollButtonText"
+        android:text="Generate"
         android:textAllCaps="false"
         android:textColor="@color/button_text"
         android:textSize="18sp"

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="screen_background">#FF0F172A</color>
+    <color name="surface_background">#FF162033</color>
+    <color name="surface_stroke">#FF27334B</color>
+    <color name="text_primary">#FFF8FAFC</color>
+    <color name="text_secondary">#FFB7C3D8</color>
+    <color name="accent">#6E97FF</color>
+    <color name="accent_pressed">#88AAFF</color>
+    <color name="accent_disabled">#42537A</color>
+    <color name="button_text">#FFFFFFFF</color>
+</resources>

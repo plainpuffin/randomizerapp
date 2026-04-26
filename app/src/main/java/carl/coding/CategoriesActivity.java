@@ -7,57 +7,83 @@ import android.os.Vibrator;
 import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
-import androidx.appcompat.app.AppCompatActivity;
-import java.util.List;
-import java.util.Random;
 
+import androidx.appcompat.app.AppCompatActivity;
+
+import java.util.ArrayList;
+import java.util.Random;
 
 public class CategoriesActivity extends AppCompatActivity {
 
-    private List<String> elementList;
+    private ArrayList<String> originalList;
+    private ArrayList<String> activeList;
     private TextView resultText;
+    private TextView poolStatusText;
     private Button pickButton;
+    private Button resetButton;
     private Random random;
     private Handler handler;
     private Runnable rollingRunnable;
     private Vibrator vibrator;
+    private boolean withdrawMode;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PreferencesHelper.applyNightMode(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_categories);
 
-        elementList = getIntent().getStringArrayListExtra("elements");
+        originalList = getIntent().getStringArrayListExtra("elements");
+        if (originalList == null) {
+            originalList = new ArrayList<>();
+        }
+        activeList = new ArrayList<>(originalList);
+        withdrawMode = getIntent().getBooleanExtra("withdrawMode", false);
+
         resultText = findViewById(R.id.result_text);
+        poolStatusText = findViewById(R.id.pool_status_text);
         pickButton = findViewById(R.id.pick_button);
+        resetButton = findViewById(R.id.reset_button);
 
         random = new Random();
         handler = new Handler();
         vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
 
-        pickButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                pickNextElement();
-            }
-        });
+        pickButton.setOnClickListener(v -> pickNextElement());
+        resetButton.setOnClickListener(v -> resetPool());
+
+        resetButton.setVisibility(withdrawMode ? View.VISIBLE : View.GONE);
+        updatePoolStatus();
     }
 
     private void pickNextElement() {
+        if (activeList.isEmpty()) {
+            resultText.setText("Pool empty");
+            updatePoolStatus();
+            pickButton.setEnabled(false);
+            return;
+        }
+
         pickButton.setEnabled(false);
         rollingRunnable = new Runnable() {
             @Override
             public void run() {
-                int randomIndex = random.nextInt(elementList.size());
-                String randomElement = elementList.get(randomIndex);
+                int randomIndex = random.nextInt(activeList.size());
+                String randomElement = activeList.get(randomIndex);
                 resultText.setText(randomElement);
-                resultText.setTextColor(Color.parseColor("#000000"));
-                resultText.setTextSize(45);
-                pickButton.setEnabled(true);
+                resultText.setTextColor(getColor(R.color.text_primary));
+                resultText.setTextSize(40);
+                if (withdrawMode) {
+                    activeList.remove(randomIndex);
+                }
+                updatePoolStatus();
+                pickButton.setEnabled(!activeList.isEmpty());
             }
         };
 
-        vibrator.vibrate(300);
+        if (vibrator != null) {
+            vibrator.vibrate(250);
+        }
         rollThroughElements();
     }
 
@@ -65,9 +91,8 @@ public class CategoriesActivity extends AppCompatActivity {
         int duration = 800;
         int interval = 100;
         int iterations = duration / interval;
-        // final int lastIndex = elementList.size() - 1;
-        resultText.setTextSize(35);
-        resultText.setTextColor(Color.parseColor("#666666"));
+        resultText.setTextSize(34);
+        resultText.setTextColor(getColor(R.color.text_secondary));
 
         handler.postDelayed(new Runnable() {
             int iteration = 0;
@@ -75,9 +100,13 @@ public class CategoriesActivity extends AppCompatActivity {
 
             @Override
             public void run() {
+                if (activeList.isEmpty()) {
+                    handler.post(rollingRunnable);
+                    return;
+                }
                 if (iteration < iterations) {
-                    resultText.setText(elementList.get(currentIndex));
-                    currentIndex = (currentIndex + 1) % elementList.size();
+                    resultText.setText(activeList.get(currentIndex % activeList.size()));
+                    currentIndex++;
                     iteration++;
                     handler.postDelayed(this, interval);
                 } else {
@@ -85,6 +114,27 @@ public class CategoriesActivity extends AppCompatActivity {
                 }
             }
         }, interval);
+    }
+
+    private void resetPool() {
+        activeList.clear();
+        activeList.addAll(originalList);
+        resultText.setText("Ready");
+        resultText.setTextColor(getColor(R.color.text_primary));
+        pickButton.setEnabled(!activeList.isEmpty());
+        updatePoolStatus();
+    }
+
+    private void updatePoolStatus() {
+        if (withdrawMode) {
+            if (activeList.isEmpty()) {
+                poolStatusText.setText("Withdraw mode on, all categories have been used.");
+            } else {
+                poolStatusText.setText("Withdraw mode on, " + activeList.size() + " left in the pool.");
+            }
+        } else {
+            poolStatusText.setText("Standard mode, picks stay in the pool.");
+        }
     }
 
     @Override

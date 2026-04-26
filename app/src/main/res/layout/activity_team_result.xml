@@ -5,52 +5,55 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:background="@color/screen_background"
-    tools:context=".DiceActivity">
+    tools:context=".TeamResultActivity">
 
     <LinearLayout
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
+        android:layout_height="0dp"
         android:layout_marginStart="24dp"
+        android:layout_marginTop="24dp"
         android:layout_marginEnd="24dp"
+        android:layout_marginBottom="16dp"
         android:background="@drawable/panel_background"
-        android:gravity="center_horizontal"
         android:orientation="vertical"
         android:padding="24dp"
-        app:layout_constraintBottom_toTopOf="@+id/rollButton"
+        app:layout_constraintBottom_toTopOf="@+id/reroll_teams_button"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_bias="0.6">
+        app:layout_constraintTop_toTopOf="parent">
 
         <TextView
-            android:id="@+id/rollResult"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:text="1"
-            android:textAlignment="center"
+            android:text="Teams"
             android:textColor="@color/text_primary"
-            android:textSize="42sp"
+            android:textSize="26sp"
             android:textStyle="bold" />
 
-        <ImageView
-            android:id="@+id/ImageView1"
-            android:layout_width="130dp"
-            android:layout_height="130dp"
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
             android:layout_marginTop="16dp"
-            android:src="@drawable/dice_1_512" />
+            android:layout_weight="1">
+
+            <TextView
+                android:id="@+id/team_result_text"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textColor="@color/text_primary"
+                android:textSize="20sp" />
+        </ScrollView>
     </LinearLayout>
 
     <Button
-        android:id="@+id/rollButton"
+        android:id="@+id/reroll_teams_button"
         android:layout_width="0dp"
         android:layout_height="56dp"
         android:layout_marginStart="24dp"
         android:layout_marginEnd="24dp"
         android:layout_marginBottom="24dp"
         android:background="@drawable/button_selector"
-        android:onClick="roll"
-        android:text="@string/rollButtonText"
+        android:text="Shuffle again"
         android:textAllCaps="false"
         android:textColor="@color/button_text"
         android:textSize="18sp"

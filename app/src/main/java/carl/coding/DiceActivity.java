@@ -15,10 +15,8 @@ import android.os.Vibrator;
 
 import java.util.Random;
 
-
 public class DiceActivity extends AppCompatActivity {
 
-    // Declare instance variables
     Button rollButton;
     Drawable dice1Drawable;
     Drawable dice2Drawable;
@@ -26,7 +24,7 @@ public class DiceActivity extends AppCompatActivity {
     Drawable dice4Drawable;
     Drawable dice5Drawable;
     Drawable dice6Drawable;
-    Handler handler;  // Create a handler to update the UI with delays
+    Handler handler;
     ImageView diceImageView1;
     Random randomizer;
     TextView rollResult;
@@ -34,19 +32,14 @@ public class DiceActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
+        PreferencesHelper.applyNightMode(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_dice);
 
-        // Initiate randomizer
         randomizer = new Random();
-
-        // Initiate vibrator
         vib = (Vibrator) getSystemService(Context.VIBRATOR_SERVICE);
-
-        // Initiate handler
         handler = new Handler();
 
-        // Load dice images
         dice1Drawable = ContextCompat.getDrawable(this, R.drawable.dice_1_512);
         dice2Drawable = ContextCompat.getDrawable(this, R.drawable.dice_2_512);
         dice3Drawable = ContextCompat.getDrawable(this, R.drawable.dice_3_512);
@@ -54,7 +47,6 @@ public class DiceActivity extends AppCompatActivity {
         dice5Drawable = ContextCompat.getDrawable(this, R.drawable.dice_5_512);
         dice6Drawable = ContextCompat.getDrawable(this, R.drawable.dice_6_512);
 
-        // Get widget by ID
         rollResult = findViewById(R.id.rollResult);
         rollButton = findViewById(R.id.rollButton);
         diceImageView1 = findViewById(R.id.ImageView1);
@@ -67,63 +59,43 @@ public class DiceActivity extends AppCompatActivity {
     }
 
     public void roll(View view) {
-        // Disable button during animation
         rollButton.setEnabled(false);
 
-        // Vibrate to provide feedback to the user
-        vib.vibrate(300);
+        if (vib != null) {
+            vib.vibrate(300);
+        }
 
-        int[] resultInt = {1, 2}; // Variable to hold the rolling and previous value
+        int[] resultInt = {1, 2};
 
-        // Roll through some results to create tension
         for (int i = 0; i <= 6; i++) {
-
-            // Delay for each step
-            int delay = 70*i + (i+10)*(i+10);
-
-            // Schedule all steps with specified delays
-            handler.postDelayed(new Runnable() {
-                @Override
-                public void run() {
-                    // Reduce scale to communicate rolling
-                    diceImageView1.setScaleX((float) 0.8);
-                    diceImageView1.setScaleY((float) 0.8);
-                    // Roll a new random value
-                    resultInt[1] = resultInt[0];
-                    resultInt[0] = randomizer.nextInt(6) + 1;
-                    // Make sure next roll is different from the previous
-                    if (resultInt[0] == resultInt[1]) {
-                        if (resultInt[0] == 6) {
-                            resultInt[0] = 1;
-                        } else {
-                            resultInt[0] += 1;
-                        }
+            int delay = 70 * i + (i + 10) * (i + 10);
+            handler.postDelayed(() -> {
+                diceImageView1.setScaleX(0.8f);
+                diceImageView1.setScaleY(0.8f);
+                resultInt[1] = resultInt[0];
+                resultInt[0] = randomizer.nextInt(6) + 1;
+                if (resultInt[0] == resultInt[1]) {
+                    if (resultInt[0] == 6) {
+                        resultInt[0] = 1;
+                    } else {
+                        resultInt[0] += 1;
                     }
-
-                    //String resultingString = String.valueOf(resultInt[0]);
-                    //rollResult.setText(resultingString);
-                    resultToImage(resultInt[0]);
-
                 }
+                resultToImage(resultInt[0]);
+                rollResult.setText(String.valueOf(resultInt[0]));
             }, delay);
         }
 
-        // Delay the final update to display the resulting value
-        handler.postDelayed(new Runnable() {
-            @Override
-            public void run() {
-                //String resultingString = String.valueOf(resultInt[0]);
-                //rollResult.setText(resultingString);
-                diceImageView1.setScaleX((float) 1);
-                diceImageView1.setScaleY((float) 1);
-                resultToImage(resultInt[0]);
-                rollButton.setEnabled(true);  // Reactivate Button
-            }
-        }, 6*70 + (6+10)*(6+10)); // Delay to wait for the animation to complete, same as above
+        handler.postDelayed(() -> {
+            diceImageView1.setScaleX(1f);
+            diceImageView1.setScaleY(1f);
+            resultToImage(resultInt[0]);
+            rollResult.setText(String.valueOf(resultInt[0]));
+            rollButton.setEnabled(true);
+        }, 6 * 70 + (6 + 10) * (6 + 10));
     }
 
     private void resultToImage(int rollResult) {
-
         if (rollResult == 1) {
             diceImageView1.setImageDrawable(dice1Drawable);
         } else if (rollResult == 2) {
