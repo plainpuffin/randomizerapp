@@ -3,9 +3,9 @@ package carl.coding;
 import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
+import android.widget.ImageButton;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.appcompat.widget.SwitchCompat;
 
 public class StartMenu extends AppCompatActivity {
 
@@ -15,13 +15,20 @@ public class StartMenu extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_menu);
 
-        SwitchCompat darkModeSwitch = findViewById(R.id.darkModeSwitch);
-        darkModeSwitch.setChecked(PreferencesHelper.isDarkModeEnabled(this));
-        darkModeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
-            PreferencesHelper.setDarkModeEnabled(StartMenu.this, isChecked);
+        ImageButton themeToggleButton = findViewById(R.id.themeToggleButton);
+        refreshThemeToggleButton(themeToggleButton);
+        themeToggleButton.setOnClickListener(v -> {
+            boolean enableDarkMode = !PreferencesHelper.isDarkModeEnabled(StartMenu.this);
+            PreferencesHelper.setDarkModeEnabled(StartMenu.this, enableDarkMode);
             PreferencesHelper.applyNightMode(StartMenu.this);
             recreate();
         });
+    }
+
+    private void refreshThemeToggleButton(ImageButton themeToggleButton) {
+        boolean darkModeEnabled = PreferencesHelper.isDarkModeEnabled(this);
+        themeToggleButton.setImageResource(darkModeEnabled ? R.drawable.ic_theme_sun : R.drawable.ic_theme_moon);
+        themeToggleButton.setContentDescription(darkModeEnabled ? "Switch to light mode" : "Switch to dark mode");
     }
 
     public void goCoin(View view) {

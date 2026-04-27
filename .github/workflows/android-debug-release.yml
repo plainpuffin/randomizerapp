@@ -35,7 +35,7 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: randomizerapp-debug-apk
-          path: app/build/outputs/apk/debug/app-debug.apk
+          path: app/build/outputs/apk/debug/randomizer-debug.apk
           if-no-files-found: error
 
       - name: Publish debug prerelease
@@ -50,4 +50,4 @@ jobs:
           prerelease: true
           allowUpdates: true
           replacesArtifacts: true
-          artifacts: app/build/outputs/apk/debug/app-debug.apk
+          artifacts: app/build/outputs/apk/debug/randomizer-debug.apk

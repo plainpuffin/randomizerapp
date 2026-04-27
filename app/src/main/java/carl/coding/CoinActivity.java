@@ -44,8 +44,8 @@ public class CoinActivity extends AppCompatActivity {
         coinFlipResult = findViewById(R.id.coinFlipResult);
         flipButton = findViewById(R.id.flipButton);
 
-        headsDrawable = ContextCompat.getDrawable(this, R.drawable.coin_heads);
-        tailsDrawable = ContextCompat.getDrawable(this, R.drawable.coin_tails);
+        headsDrawable = ContextCompat.getDrawable(this, R.drawable.coin_heads_transparent);
+        tailsDrawable = ContextCompat.getDrawable(this, R.drawable.coin_tails_transparent);
         coinImageView.setImageDrawable(headsDrawable);
         animator1 = ObjectAnimator.ofFloat(coinImageView, "rotationY", 0f, 360 * 4 + 90f);
         animator2 = ObjectAnimator.ofFloat(coinImageView, "rotationY", -90f, 0f);
