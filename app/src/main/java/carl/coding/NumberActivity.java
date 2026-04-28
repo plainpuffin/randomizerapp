@@ -19,6 +19,7 @@ public class NumberActivity extends AppCompatActivity {
 
     private static final String KEY_NUMBER_MIN = "number_min";
     private static final String KEY_NUMBER_MAX = "number_max";
+    private static final float RESULT_TEXT_SIZE_SP = 42f;
 
     private final Random random = new Random();
     private final Handler handler = new Handler(Looper.getMainLooper());
@@ -82,13 +83,20 @@ public class NumberActivity extends AppCompatActivity {
             return;
         }
 
+        if (min == max) {
+            minInput.setError("Must be strictly less than max");
+            maxInput.setError("Must be strictly greater than min");
+            Toast.makeText(this, "Maximum must be greater than minimum.", Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         PreferencesHelper.setString(this, KEY_NUMBER_MIN, minText);
         PreferencesHelper.setString(this, KEY_NUMBER_MAX, maxText);
 
         generateButton.setEnabled(false);
         generateButton.setText("Generating...");
-        resultText.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
-        resultText.setTextSize(30);
+        resultText.setTextColor(ContextCompat.getColor(this, R.color.text_feedback_muted));
+        resultText.setTextSize(RESULT_TEXT_SIZE_SP);
         resultText.setText("...");
 
         vibrate(60);
@@ -117,7 +125,7 @@ public class NumberActivity extends AppCompatActivity {
         long result = nextRandomLong(min, max);
         resultText.setText(String.valueOf(result));
         resultText.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
-        resultText.setTextSize(42);
+        resultText.setTextSize(RESULT_TEXT_SIZE_SP);
         resultText.animate().cancel();
         resultText.setScaleX(0.92f);
         resultText.setScaleY(0.92f);

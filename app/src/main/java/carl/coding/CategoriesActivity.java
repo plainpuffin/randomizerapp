@@ -1,6 +1,5 @@
 package carl.coding;
 
-import android.graphics.Color;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Vibrator;
@@ -9,11 +8,14 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.content.ContextCompat;
 
 import java.util.ArrayList;
 import java.util.Random;
 
 public class CategoriesActivity extends AppCompatActivity {
+
+    private static final float RESULT_TEXT_SIZE_SP = 38f;
 
     private ArrayList<String> originalList;
     private ArrayList<String> activeList;
@@ -71,8 +73,8 @@ public class CategoriesActivity extends AppCompatActivity {
                 int randomIndex = random.nextInt(activeList.size());
                 String randomElement = activeList.get(randomIndex);
                 resultText.setText(randomElement);
-                resultText.setTextColor(getColor(R.color.text_primary));
-                resultText.setTextSize(40);
+                resultText.setTextColor(ContextCompat.getColor(CategoriesActivity.this, R.color.text_primary));
+                resultText.setTextSize(RESULT_TEXT_SIZE_SP);
                 if (withdrawMode) {
                     activeList.remove(randomIndex);
                 }
@@ -91,8 +93,8 @@ public class CategoriesActivity extends AppCompatActivity {
         int duration = 800;
         int interval = 100;
         int iterations = duration / interval;
-        resultText.setTextSize(34);
-        resultText.setTextColor(getColor(R.color.text_secondary));
+        resultText.setTextSize(RESULT_TEXT_SIZE_SP);
+        resultText.setTextColor(ContextCompat.getColor(this, R.color.text_feedback_muted));
 
         handler.postDelayed(new Runnable() {
             int iteration = 0;
@@ -120,7 +122,7 @@ public class CategoriesActivity extends AppCompatActivity {
         activeList.clear();
         activeList.addAll(originalList);
         resultText.setText("Ready");
-        resultText.setTextColor(getColor(R.color.text_primary));
+        resultText.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
         pickButton.setEnabled(!activeList.isEmpty());
         updatePoolStatus();
     }

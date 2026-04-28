@@ -5,6 +5,7 @@
     <color name="surface_stroke">#D8E3FF</color>
     <color name="text_primary">#FF14213D</color>
     <color name="text_secondary">#FF60708A</color>
+    <color name="text_feedback_muted">#FF8A96A8</color>
     <color name="accent">#4D7EF7</color>
     <color name="accent_pressed">#3D68D7</color>
     <color name="accent_disabled">#A8BEF6</color>

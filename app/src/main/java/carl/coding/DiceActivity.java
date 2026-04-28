@@ -62,7 +62,7 @@ public class DiceActivity extends AppCompatActivity {
 
     public void roll(View view) {
         rollButton.setEnabled(false);
-        rollResult.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
+        rollResult.setTextColor(ContextCompat.getColor(this, R.color.text_feedback_muted));
 
         if (vib != null) {
             vib.vibrate(300);
