@@ -17,6 +17,9 @@ import java.util.Random;
 
 public class NumberActivity extends AppCompatActivity {
 
+    private static final String KEY_NUMBER_MIN = "number_min";
+    private static final String KEY_NUMBER_MAX = "number_max";
+
     private final Random random = new Random();
     private final Handler handler = new Handler(Looper.getMainLooper());
     private EditText minInput;
@@ -40,6 +43,9 @@ public class NumberActivity extends AppCompatActivity {
         maxInput.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
         maxInput.setHintTextColor(ContextCompat.getColor(this, R.color.text_secondary));
 
+        minInput.setText(PreferencesHelper.getString(this, KEY_NUMBER_MIN, ""));
+        maxInput.setText(PreferencesHelper.getString(this, KEY_NUMBER_MAX, ""));
+
         generateButton.setOnClickListener(v -> generateNumber());
     }
 
@@ -48,25 +54,36 @@ public class NumberActivity extends AppCompatActivity {
         String maxText = maxInput.getText().toString().trim();
 
         if (TextUtils.isEmpty(minText) || TextUtils.isEmpty(maxText)) {
+            minInput.setError(TextUtils.isEmpty(minText) ? "Required" : null);
+            maxInput.setError(TextUtils.isEmpty(maxText) ? "Required" : null);
             Toast.makeText(this, "Enter both min and max.", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        int min;
-        int max;
+        minInput.setError(null);
+        maxInput.setError(null);
+
+        long min;
+        long max;
         try {
-            min = Integer.parseInt(minText);
-            max = Integer.parseInt(maxText);
+            min = Long.parseLong(minText);
+            max = Long.parseLong(maxText);
         } catch (NumberFormatException exception) {
+            minInput.setError("Invalid number");
+            maxInput.setError("Invalid number");
             Toast.makeText(this, "Use valid whole numbers.", Toast.LENGTH_SHORT).show();
             return;
         }
 
         if (min > max) {
-            int temp = min;
-            min = max;
-            max = temp;
+            minInput.setError("Must be less than or equal to max");
+            maxInput.setError("Must be greater than or equal to min");
+            Toast.makeText(this, "Minimum must be less than or equal to maximum.", Toast.LENGTH_SHORT).show();
+            return;
         }
+
+        PreferencesHelper.setString(this, KEY_NUMBER_MIN, minText);
+        PreferencesHelper.setString(this, KEY_NUMBER_MAX, maxText);
 
         generateButton.setEnabled(false);
         generateButton.setText("Generating...");
@@ -78,14 +95,13 @@ public class NumberActivity extends AppCompatActivity {
         runRollingAnimation(min, max, 10, 70);
     }
 
-    private void runRollingAnimation(int min, int max, int steps, long delayMs) {
+    private void runRollingAnimation(long min, long max, int steps, long delayMs) {
         handler.postDelayed(new Runnable() {
             int remainingSteps = steps;
 
             @Override
             public void run() {
-                int preview = random.nextInt((max - min) + 1) + min;
-                resultText.setText(String.valueOf(preview));
+                resultText.setText(String.valueOf(nextRandomLong(min, max)));
 
                 if (remainingSteps > 0) {
                     remainingSteps--;
@@ -97,8 +113,8 @@ public class NumberActivity extends AppCompatActivity {
         }, delayMs);
     }
 
-    private void finishNumberRoll(int min, int max) {
-        int result = random.nextInt((max - min) + 1) + min;
+    private void finishNumberRoll(long min, long max) {
+        long result = nextRandomLong(min, max);
         resultText.setText(String.valueOf(result));
         resultText.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
         resultText.setTextSize(42);
@@ -113,6 +129,15 @@ public class NumberActivity extends AppCompatActivity {
         vibrate(140);
     }
 
+    private long nextRandomLong(long min, long max) {
+        if (min == max) {
+            return min;
+        }
+
+        double range = (double) max - (double) min + 1d;
+        return min + (long) Math.floor(random.nextDouble() * range);
+    }
+
     private void vibrate(long durationMs) {
         Vibrator vibrator = (Vibrator) getSystemService(VIBRATOR_SERVICE);
         if (vibrator != null) {
@@ -124,6 +149,13 @@ public class NumberActivity extends AppCompatActivity {
     protected void onDestroy() {
         handler.removeCallbacksAndMessages(null);
         super.onDestroy();
+    }
+
+    @Override
+    protected void onPause() {
+        PreferencesHelper.setString(this, KEY_NUMBER_MIN, minInput.getText().toString().trim());
+        PreferencesHelper.setString(this, KEY_NUMBER_MAX, maxInput.getText().toString().trim());
+        super.onPause();
     }
 
     @Override

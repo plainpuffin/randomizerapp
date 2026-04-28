@@ -20,6 +20,9 @@ import java.util.Collections;
 
 public class CategoriesSetupActivity extends AppCompatActivity {
 
+    private static final String KEY_CATEGORIES = "categories_list";
+    private static final String KEY_CATEGORIES_WITHDRAW = "categories_withdraw";
+
     private final ArrayList<String> elementList = new ArrayList<>();
     private LinearLayout elementListLayout;
 
@@ -36,7 +39,15 @@ public class CategoriesSetupActivity extends AppCompatActivity {
         addButton.setOnClickListener(v -> addElement(null));
         startButton.setOnClickListener(v -> startCategoriesActivity());
 
-        if (elementListLayout.getChildCount() == 0) {
+        android.widget.Switch withdrawSwitch = findViewById(R.id.withdraw_switch);
+        withdrawSwitch.setChecked(PreferencesHelper.getBoolean(this, KEY_CATEGORIES_WITHDRAW, false));
+
+        ArrayList<String> savedCategories = PreferencesHelper.getStringList(this, KEY_CATEGORIES);
+        if (!savedCategories.isEmpty()) {
+            for (String category : savedCategories) {
+                addElement(category, false);
+            }
+        } else if (elementListLayout.getChildCount() == 0) {
             addElement(null);
             addElement(null);
             addElement(null);
@@ -50,6 +61,10 @@ public class CategoriesSetupActivity extends AppCompatActivity {
     }
 
     private void addElement(String prefill) {
+        addElement(prefill, true);
+    }
+
+    private void addElement(String prefill, boolean requestFocus) {
         EditText editText = new EditText(this);
         editText.setHint("Category name");
         editText.setSingleLine(true);
@@ -103,7 +118,9 @@ public class CategoriesSetupActivity extends AppCompatActivity {
         elementLayout.addView(removeButton);
 
         elementListLayout.addView(elementLayout);
-        editText.requestFocus();
+        if (requestFocus) {
+            editText.requestFocus();
+        }
     }
 
     private void removeElement(View view) {
@@ -113,6 +130,7 @@ public class CategoriesSetupActivity extends AppCompatActivity {
 
     private void startCategoriesActivity() {
         removeEmptyElements();
+        persistState();
 
         if (elementList.size() == 0) {
             addElement(null);
@@ -149,6 +167,28 @@ public class CategoriesSetupActivity extends AppCompatActivity {
                 elementListLayout.removeView(childToRemove);
             }
         }
+    }
+
+    private void persistState() {
+        ArrayList<String> currentEntries = new ArrayList<>();
+        for (int i = 0; i < elementListLayout.getChildCount(); i++) {
+            LinearLayout layout = (LinearLayout) elementListLayout.getChildAt(i);
+            EditText editText = (EditText) layout.getChildAt(0);
+            String value = editText.getText().toString().trim();
+            if (!TextUtils.isEmpty(value)) {
+                currentEntries.add(value);
+            }
+        }
+
+        PreferencesHelper.setStringList(this, KEY_CATEGORIES, currentEntries);
+        PreferencesHelper.setBoolean(this, KEY_CATEGORIES_WITHDRAW,
+                ((android.widget.Switch) findViewById(R.id.withdraw_switch)).isChecked());
+    }
+
+    @Override
+    protected void onPause() {
+        persistState();
+        super.onPause();
     }
 
     private int dp(int value) {

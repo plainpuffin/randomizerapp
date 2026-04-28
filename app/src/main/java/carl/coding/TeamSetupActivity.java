@@ -21,6 +21,9 @@ import java.util.Collections;
 
 public class TeamSetupActivity extends AppCompatActivity {
 
+    private static final String KEY_TEAM_PLAYERS = "team_players";
+    private static final String KEY_TEAM_COUNT = "team_count";
+
     private final ArrayList<String> players = new ArrayList<>();
     private LinearLayout playerListLayout;
     private EditText teamCountInput;
@@ -40,13 +43,26 @@ public class TeamSetupActivity extends AppCompatActivity {
         addPlayerButton.setOnClickListener(v -> addPlayerField(null));
         randomizeTeamsButton.setOnClickListener(v -> startTeamResult());
 
-        addPlayerField(null);
-        addPlayerField(null);
-        addPlayerField(null);
-        addPlayerField(null);
+        teamCountInput.setText(PreferencesHelper.getString(this, KEY_TEAM_COUNT, "2"));
+
+        ArrayList<String> savedPlayers = PreferencesHelper.getStringList(this, KEY_TEAM_PLAYERS);
+        if (!savedPlayers.isEmpty()) {
+            for (String player : savedPlayers) {
+                addPlayerField(player, false);
+            }
+        } else {
+            addPlayerField(null, false);
+            addPlayerField(null, false);
+            addPlayerField(null, false);
+            addPlayerField(null, false);
+        }
     }
 
     private void addPlayerField(String prefill) {
+        addPlayerField(prefill, true);
+    }
+
+    private void addPlayerField(String prefill, boolean requestFocus) {
         EditText editText = new EditText(this);
         editText.setHint("Player name");
         editText.setSingleLine(true);
@@ -97,6 +113,9 @@ public class TeamSetupActivity extends AppCompatActivity {
         row.addView(removeButton);
 
         playerListLayout.addView(row);
+        if (requestFocus) {
+            editText.requestFocus();
+        }
     }
 
     private void removePlayer(View view) {
@@ -105,6 +124,7 @@ public class TeamSetupActivity extends AppCompatActivity {
 
     private void startTeamResult() {
         collectPlayers();
+        persistState();
         if (players.size() < 2) {
             Toast.makeText(this, "Add at least two players.", Toast.LENGTH_SHORT).show();
             return;
@@ -143,6 +163,27 @@ public class TeamSetupActivity extends AppCompatActivity {
         for (Integer index : emptyIndexes) {
             playerListLayout.removeViewAt(index);
         }
+    }
+
+    private void persistState() {
+        ArrayList<String> currentPlayers = new ArrayList<>();
+        for (int i = 0; i < playerListLayout.getChildCount(); i++) {
+            LinearLayout row = (LinearLayout) playerListLayout.getChildAt(i);
+            EditText editText = (EditText) row.getChildAt(0);
+            String name = editText.getText().toString().trim();
+            if (!TextUtils.isEmpty(name)) {
+                currentPlayers.add(name);
+            }
+        }
+
+        PreferencesHelper.setStringList(this, KEY_TEAM_PLAYERS, currentPlayers);
+        PreferencesHelper.setString(this, KEY_TEAM_COUNT, teamCountInput.getText().toString().trim());
+    }
+
+    @Override
+    protected void onPause() {
+        persistState();
+        super.onPause();
     }
 
     @Override

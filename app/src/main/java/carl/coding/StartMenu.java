@@ -51,10 +51,6 @@ public class StartMenu extends AppCompatActivity {
         startScreen(NumberActivity.class);
     }
 
-    public void goYesNo(View view) {
-        startScreen(YesNoActivity.class);
-    }
-
     public void goYatzy(View view) {
         startScreen(YatzyActivity.class);
     }

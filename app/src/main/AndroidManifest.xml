@@ -12,9 +12,6 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.Randomizer">
         <activity
-            android:name=".YesNoActivity"
-            android:exported="false" />
-        <activity
             android:name=".NumberActivity"
             android:exported="false" />
         <activity

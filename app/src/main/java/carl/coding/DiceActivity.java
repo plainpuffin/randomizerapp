@@ -17,6 +17,8 @@ import java.util.Random;
 
 public class DiceActivity extends AppCompatActivity {
 
+    private int currentRoll = 1;
+
     Button rollButton;
     Drawable dice1Drawable;
     Drawable dice2Drawable;
@@ -60,6 +62,7 @@ public class DiceActivity extends AppCompatActivity {
 
     public void roll(View view) {
         rollButton.setEnabled(false);
+        rollResult.setTextColor(ContextCompat.getColor(this, R.color.text_secondary));
 
         if (vib != null) {
             vib.vibrate(300);
@@ -83,14 +86,16 @@ public class DiceActivity extends AppCompatActivity {
                 }
                 resultToImage(resultInt[0]);
                 rollResult.setText(String.valueOf(resultInt[0]));
+                currentRoll = resultInt[0];
             }, delay);
         }
 
         handler.postDelayed(() -> {
             diceImageView1.setScaleX(1f);
             diceImageView1.setScaleY(1f);
-            resultToImage(resultInt[0]);
-            rollResult.setText(String.valueOf(resultInt[0]));
+            resultToImage(currentRoll);
+            rollResult.setText(String.valueOf(currentRoll));
+            rollResult.setTextColor(ContextCompat.getColor(this, R.color.text_primary));
             rollButton.setEnabled(true);
         }, 6 * 70 + (6 + 10) * (6 + 10));
     }

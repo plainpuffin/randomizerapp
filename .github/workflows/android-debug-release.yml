@@ -9,6 +9,9 @@ on:
 permissions:
   contents: write
 
+env:
+  FORCE_JAVASCRIPT_ACTIONS_TO_NODE24: true
+
 jobs:
   build-debug-apk:
     runs-on: ubuntu-latest
@@ -41,10 +44,10 @@ jobs:
       - name: Publish debug prerelease
         uses: ncipollo/release-action@v1
         with:
-          tag: debug-latest
-          name: Randomizer Debug APK
+          tag: randomizerapp-debug-latest
+          name: Randomizer App Debug APK
           body: |
-            Latest informal debug APK build for Randomizer.
+            Latest informal debug APK build for Randomizer App.
 
             This release is updated automatically from the `main` branch workflow.
           prerelease: true
