@@ -1,9 +1,7 @@
 package carl.coding;
 
 import android.content.Context;
-import android.content.ComponentName;
 import android.content.SharedPreferences;
-import android.content.pm.PackageManager;
 import android.text.TextUtils;
 
 import androidx.appcompat.app.AppCompatDelegate;
@@ -27,7 +25,6 @@ public class PreferencesHelper {
 
     public static void setDarkModeEnabled(Context context, boolean enabled) {
         getPreferences(context).edit().putBoolean(KEY_DARK_MODE, enabled).apply();
-        applyLauncherIconTheme(context, enabled);
     }
 
     public static void setString(Context context, String key, String value) {
@@ -80,29 +77,6 @@ public class PreferencesHelper {
                 isDarkModeEnabled(context)
                         ? AppCompatDelegate.MODE_NIGHT_YES
                         : AppCompatDelegate.MODE_NIGHT_NO
-        );
-    }
-
-    public static void syncLauncherIconTheme(Context context) {
-        applyLauncherIconTheme(context, isDarkModeEnabled(context));
-    }
-
-    private static void applyLauncherIconTheme(Context context, boolean darkModeEnabled) {
-        PackageManager packageManager = context.getPackageManager();
-        int flags = PackageManager.DONT_KILL_APP;
-
-        ComponentName lightAlias = new ComponentName(context, "carl.coding.StartMenuLight");
-        ComponentName darkAlias = new ComponentName(context, "carl.coding.StartMenuDark");
-
-        packageManager.setComponentEnabledSetting(
-                lightAlias,
-                darkModeEnabled ? PackageManager.COMPONENT_ENABLED_STATE_DISABLED : PackageManager.COMPONENT_ENABLED_STATE_ENABLED,
-                flags
-        );
-        packageManager.setComponentEnabledSetting(
-                darkAlias,
-                darkModeEnabled ? PackageManager.COMPONENT_ENABLED_STATE_ENABLED : PackageManager.COMPONENT_ENABLED_STATE_DISABLED,
-                flags
         );
     }
 }

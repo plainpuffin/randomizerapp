@@ -6,9 +6,9 @@
     <application
         android:name=".RandomizerApp"
         android:allowBackup="true"
-        android:icon="@mipmap/ic_launcher_light"
+        android:icon="@drawable/dice350"
         android:label="@string/app_name"
-        android:roundIcon="@mipmap/ic_launcher_light_round"
+        android:roundIcon="@drawable/dice350"
         android:supportsRtl="true"
         android:theme="@style/Theme.Randomizer">
         <activity
@@ -40,35 +40,12 @@
             android:exported="false" />
         <activity
             android:name=".StartMenu"
-            android:exported="true" />
-
-        <activity-alias
-            android:name=".StartMenuLight"
-            android:enabled="true"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_light"
-            android:roundIcon="@mipmap/ic_launcher_light_round"
-            android:label="@string/app_name"
-            android:targetActivity=".StartMenu">
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity-alias>
-
-        <activity-alias
-            android:name=".StartMenuDark"
-            android:enabled="false"
-            android:exported="true"
-            android:icon="@mipmap/ic_launcher_dark"
-            android:roundIcon="@mipmap/ic_launcher_dark_round"
-            android:label="@string/app_name"
-            android:targetActivity=".StartMenu">
-            <intent-filter>
-                <action android:name="android.intent.action.MAIN" />
-                <category android:name="android.intent.category.LAUNCHER" />
-            </intent-filter>
-        </activity-alias>
+        </activity>
     </application>
 
 </manifest>

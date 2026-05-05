@@ -12,7 +12,6 @@ public class StartMenu extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         PreferencesHelper.applyNightMode(this);
-        PreferencesHelper.syncLauncherIconTheme(this);
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_start_menu);
 
